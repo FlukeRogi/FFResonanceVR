@@ -1,0 +1,18 @@
+local t0 = os.clock(); local last = nil; local until_t = -1; local next_dump = 0
+FFVR_CAMLOG = true
+uevr.sdk.callbacks.on_pre_engine_tick(function(e, dt)
+  if not FFVR_CAMLOG then return end
+  pcall(function()
+    local cm = uevr.api:get_player_controller(0).PlayerCameraManager
+    local fov = cm:GetFOVAngle(); local l = cm:GetCameraLocation(); local r = cm:GetCameraRotation()
+    local t = os.clock() - t0
+    if last and math.abs(fov - last) > 0.01 then until_t = t + 1.6 end
+    last = fov
+    local f = io.open("ffvr_cam.txt", "a"); f:write(string.format("%.3f %.2f %.1f %.1f %.1f %.2f %.2f\n", t, fov, l.X, l.Y, l.Z, r.Pitch, r.Yaw)); f:close()
+    if t < until_t and t >= next_dump then
+      local d = io.open("vhmd/dump.req", "w"); if d then d:close() end
+      next_dump = t + 0.12
+    end
+  end)
+end)
+print("battle intro logger on")

@@ -1,0 +1,16 @@
+; Applied by ffvr_launch.exe to %APPDATA%\UnrealVRMod\FFRS-Win64-Shipping\config.txt before each launch
+Frontend_RequestedRuntime=openxr_loader.dll
+FrameworkConfig_MenuOpen=false
+FrameworkConfig_RememberMenuState=true
+VR_RenderingMethod=0
+VR_PassDepthToRuntime=false
+VR_DecoupledPitch=false
+VR_AimMethod=0
+VR_WorldScale=1.000000
+VR_2DScreenMode=false
+VR_SnapTurn=false
+VR_RoomscaleMovement=false
+UI_FollowView=false
+VR_NativeStereoFix=false
+FrameworkConfig_EnableL3R3Toggle=false
+FrameworkConfig_LogLevel=3

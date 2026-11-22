@@ -1,0 +1,4 @@
+# Console commands UEVR runs at startup (copied to the UEVR profile by ffvr_launch.exe)
+# The game's depth of field together with its FXAA anti-aliasing breaks the second stereo view (NaN blocks, bloom
+# floods it). Depth of field starts off; scripts\ffvr_dof.lua turns it on together with TAA (VR menu "Depth of Field").
+r.DepthOfFieldQuality 0

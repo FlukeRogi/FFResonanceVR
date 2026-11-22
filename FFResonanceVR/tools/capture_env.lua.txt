@@ -1,0 +1,30 @@
+-- Captures a cube map (6 PNG faces) from the current map with the game's own renderer.
+-- Set before running: FFVR_CAP = { dir = "<output folder>", x = , y = , z = , size = 2048 }
+local api = uevr.api
+local cap = _G.FFVR_CAP_ARGS
+local pc = api:get_player_controller(0)
+local pawn = pc.Pawn
+local world = api:get_engine().GameViewport.World
+local krl = api:find_uobject("KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary")
+local sc_class = api:find_uobject("Class /Script/Engine.SceneCaptureComponent2D")
+local lc_struct = api:find_uobject("ScriptStruct /Script/CoreUObject.LinearColor")
+local clear = StructObject.new(lc_struct); clear.R = 0; clear.G = 0; clear.B = 0; clear.A = 1
+local rt = krl:CreateRenderTarget2D(world, cap.size, cap.size, 3, clear, false, false)   -- RTF_RGBA8_SRGB
+local sc = api:add_component_by_class(pawn, sc_class, false)
+sc.FOVAngle = 90
+sc.CaptureSource = 2            -- SCS_FinalColorLDR
+sc.bCaptureEveryFrame = false
+sc.bCaptureOnMovement = false
+sc.TextureTarget = rt
+pawn:SetActorHiddenInGame(true)
+local faces = { { "px", 0, 0 }, { "nx", 0, 180 }, { "py", 0, 90 }, { "ny", 0, -90 }, { "pz", 90, 0 }, { "nz", -90, 0 } }
+local out = {}
+for _, f in ipairs(faces) do
+    sc:K2_SetWorldLocationAndRotation(Vector3d.new(cap.x, cap.y, cap.z), Vector3d.new(f[2], f[3], 0), false, {}, true)
+    sc:CaptureScene()
+    krl:ExportRenderTarget(world, rt, cap.dir, f[1] .. ".png")
+    out[#out + 1] = f[1]
+end
+pawn:SetActorHiddenInGame(false)
+sc:K2_DestroyComponent(sc)
+print("captured " .. table.concat(out, ","))
